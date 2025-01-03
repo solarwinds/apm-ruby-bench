@@ -10,6 +10,24 @@ Additional configuration for service `locust_app_holder` can check `locust-holde
 
 Replace `env.example` to `.env` and add the required credentials
 
+### Running with local collector
+
+Change the following env:
+```yaml
+swo_ruby_apm_on:
+  ...
+  environment:
+    ...
+    SW_APM_COLLECTOR: ${JAVA_COLLECTOR}
+
+swo_ruby_apm_otlp_on:
+  ...
+  environment:
+    ...
+    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_LOCAL}
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_LOCAL}
+```
+
 ## Run Locust Testing
 
 It's recommended to run in host machine because you can see the graph

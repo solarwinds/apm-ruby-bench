@@ -22,7 +22,7 @@ x-collector-resource: &collector-resource
     cpus: '1'
     memory: 1G
 
-# this env variable is only for when EXPORT_CONTROLLER_DURATION is true
+# this env variable is only for when EXPORT_CONTROLLER_DURATION is true (default is false)
 x-common-env-variable-controller-time: &common-env-variable-controller-time
   OTEL_ENDPOINT: ${OTEL_EXPORTER_ENDPOINT}
   OTEL_HEADERS: ${OTEL_EXPORTER_OTLP_TRACES_HEADERS_STG}
