@@ -1,0 +1,100 @@
+x-service-resource: &service-resource
+  limits:
+    cpus: '1'
+    memory: 512M
+  reservations:
+    cpus: '1'
+    memory: 512M
+
+x-load-resource: &load-resource
+  limits:
+    cpus: '2'
+    memory: 2G
+  reservations:
+    cpus: '2'
+    memory: 2G
+
+services:
+  swo_ruby_apm_on:
+    image: swo_ruby_apm_benchmark:latest
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+    container_name: swo_ruby_apm_benchmark_on-1
+    restart: "no"
+    # command: tail -f /dev/null
+    ports:
+      - 8002:8002
+    environment:
+      AGENT_TYPE: apm-on
+      SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
+      SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
+      SW_APM_DEBUG_LEVEL: 3
+    deploy:
+      resources: *service-resource
+
+  swo_ruby_apm_otlp_on:
+    image: swo_ruby_apm_benchmark:latest
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+    container_name: swo_ruby_apm_benchmark_otlp_on-1
+    restart: "no"
+    # command: tail -f /dev/null
+    ports:
+      - 8004:8002
+    environment:
+      AGENT_TYPE: apm-otlp-on
+      OTLP_MODE_ON: true
+      SW_APM_REPORTER: file
+      OTEL_SERVICE_NAME: swo-benchmark-test-otlp
+      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_STG}
+      OTEL_EXPORTER_OTLP_METRICS_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
+      OTEL_EXPORTER_OTLP_TRACES_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
+      # OTEL_LOG_LEVEL: 'debug'
+    deploy:
+      resources: *service-resource
+
+  swo_ruby_apm_off:
+    image: swo_ruby_apm_benchmark:latest
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+    container_name: swo_ruby_apm_benchmark_off-2
+    restart: "no"
+    # command: tail -f /dev/null
+    ports:
+      - 8003:8002
+    environment:
+      AGENT_TYPE: apm-off
+      SW_APM_ENABLED: false
+    volumes:
+      - ./java-collector/server-grpc.crt:/var/app/test-app/server-grpc.crt
+    deploy:
+      resources: *service-resource
+
+  # python container that can run locust endless
+  # this locust run will produce metrics: apm.ruby.benchmark.response.time
+  # on swo backend, you will expect to see the Service with name apm-ruby-benchmark without any trace (metrics only)
+  locust_app_holder:
+    image: locust_app_holder:latest
+    build:
+      context: ./locust-holder
+      dockerfile: Dockerfile
+    container_name: locust-app-holder
+    # command: locust --headless -u 1 --host http://0.0.0.0:8002
+    environment:
+      API_TOKEN: ${API_TOKEN}
+      SERVICE_NAME: apm-ruby-benchmark
+      CUSTOM_METRICS_NAME: apm.ruby.benchmark.response.time
+      BENCHMARK_ENDPOINT:  otel.collector.na-01.st-ssp.solarwinds.com:443
+      LOCUST_WAIT_TIME_LOW: 30
+      LOCUST_WAIT_TIME_HIGH: 60
+      METRICS_ATTRIBUTE_NAME: apm-ruby-benchmark-attr
+    depends_on:
+      - swo_ruby_apm_on
+      - swo_ruby_apm_otlp_on
+      - swo_ruby_apm_off
+    deploy:
+      resources: *load-resource
