@@ -18,35 +18,6 @@ require "rails/test_unit/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-# module OverWriteMetrics
-#   def record_sampling_metrics
-#     @metrics[:tracecount].add(rand(1..10))
-#     @metrics[:samplecount].add(rand(1..10))
-#     @metrics[:request_count].add(rand(1..10))
-#     @metrics[:toex_count].add(rand(1..10))
-#     @metrics[:through_count].add(rand(1..10))
-#     @metrics[:tt_count].add(rand(1..10))
-#   end
-
-#   # new metrics sdk use periodic table by default
-#   def on_finish(span)
-#     SolarWindsAPM.logger.debug { "[#{self.class}/#{__method__}] processor on_finish span: #{span.to_span_data.inspect}" }
-
-#     return if non_entry_span(span: span)
-
-#     record_request_metrics(span)
-#     record_sampling_metrics
-
-#     SolarWindsAPM.logger.debug { "[#{self.class}/#{__method__}] processor on_finish succeed" }
-#   rescue StandardError => e
-#     SolarWindsAPM.logger.info { "[#{self.class}/#{__method__}] error processing span on_finish: #{e.message}" }
-#   end
-# end
-
-# require 'solarwinds_apm'
-
-SecureHeaders::Configuration.default if defined?(SecureHeaders)
-
 module TestApp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

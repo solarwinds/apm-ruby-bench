@@ -9,17 +9,17 @@ gem "sqlite3", ">= 1.4"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
+gem 'opentelemetry-exporter-otlp'
+gem 'opentelemetry-metrics-sdk'
+gem 'opentelemetry-exporter-otlp-metrics'
+
 if ENV['AGENT_TYPE'] == 'apm-otlp-on'
   source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
-    gem 'solarwinds_apm', '7.0.0'
+    gem 'solarwinds_apm', '6.1.1.otlp'
   end
 else
   gem 'solarwinds_apm'
 end
-
-gem 'opentelemetry-exporter-otlp'
-gem 'opentelemetry-metrics-sdk'
-gem 'opentelemetry-exporter-otlp-metrics'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]

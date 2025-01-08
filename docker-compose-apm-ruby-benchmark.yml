@@ -20,9 +20,11 @@ services:
     build:
       context: ./test-app
       dockerfile: Dockerfile
+      args:
+        AGENT_TYPE: apm-on
     container_name: swo_ruby_apm_benchmark_on-1
     restart: "no"
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
     ports:
       - 8002:8002
     environment:
@@ -35,20 +37,23 @@ services:
       resources: *service-resource
 
   swo_ruby_apm_otlp_on:
-    image: swo_ruby_apm_benchmark:latest
+    image: swo_ruby_apm_benchmark-otlp:latest
     build:
       context: ./test-app
       dockerfile: Dockerfile
+      args:
+        AGENT_TYPE: apm-otlp-on
+        BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
     container_name: swo_ruby_apm_benchmark_otlp_on-1
     restart: "no"
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
     ports:
       - 8004:8002
     environment:
       AGENT_TYPE: apm-otlp-on
       OTLP_MODE_ON: true
       SW_APM_REPORTER: file
-      OTEL_SERVICE_NAME: swo-benchmark-test-otlp
+      OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
       OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_STG}
       OTEL_EXPORTER_OTLP_METRICS_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
@@ -63,9 +68,11 @@ services:
     build:
       context: ./test-app
       dockerfile: Dockerfile
+      args:
+        AGENT_TYPE: apm-off
     container_name: swo_ruby_apm_benchmark_off-2
     restart: "no"
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
     ports:
       - 8003:8002
     environment:

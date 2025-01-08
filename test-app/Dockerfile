@@ -23,10 +23,11 @@ RUN apt-get update \
 WORKDIR /var/app/
 COPY . /var/app/
 
-ARG OBOE_ENV
 ARG BUNDLE_RUBYGEMS__PKG__GITHUB__COM
+ARG AGENT_TYPE
 
 RUN bundle install
+RUN rails db:migrate
 
 EXPOSE 8002
 
