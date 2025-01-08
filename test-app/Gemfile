@@ -9,13 +9,12 @@ gem "sqlite3", ">= 1.4"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-if ENV['SPECIAL_LIBOBOE'] == 'true'
-  puts "install from github package"
+if ENV['AGENT_TYPE'] == 'apm-otlp-on'
   source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
-    gem 'solarwinds_apm', '6.2.1', require: false
+    gem 'solarwinds_apm', '7.0.0'
   end
 else
-  gem 'solarwinds_apm', require: false
+  gem 'solarwinds_apm'
 end
 
 gem 'opentelemetry-exporter-otlp'

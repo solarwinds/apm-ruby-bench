@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     container_name: swo_ruby_apm_benchmark_on-1
     restart: "no"
-    # command: tail -f /dev/null
+    command: tail -f /dev/null
     ports:
       - 8002:8002
     environment:
@@ -30,6 +30,7 @@ services:
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
       SW_APM_DEBUG_LEVEL: 3
+      HOST_NAME: swo_ruby_apm_benchmark_on-1
     deploy:
       resources: *service-resource
 
@@ -40,7 +41,7 @@ services:
       dockerfile: Dockerfile
     container_name: swo_ruby_apm_benchmark_otlp_on-1
     restart: "no"
-    # command: tail -f /dev/null
+    command: tail -f /dev/null
     ports:
       - 8004:8002
     environment:
@@ -52,6 +53,7 @@ services:
       OTEL_EXPORTER_OTLP_METRICS_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
       OTEL_EXPORTER_OTLP_TRACES_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
+      HOST_NAME: swo_ruby_apm_benchmark_otlp_on-1
       # OTEL_LOG_LEVEL: 'debug'
     deploy:
       resources: *service-resource
@@ -63,12 +65,13 @@ services:
       dockerfile: Dockerfile
     container_name: swo_ruby_apm_benchmark_off-2
     restart: "no"
-    # command: tail -f /dev/null
+    command: tail -f /dev/null
     ports:
       - 8003:8002
     environment:
       AGENT_TYPE: apm-off
       SW_APM_ENABLED: false
+      HOST_NAME: swo_ruby_apm_benchmark_off-2
     volumes:
       - ./java-collector/server-grpc.crt:/var/app/test-app/server-grpc.crt
     deploy:

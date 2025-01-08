@@ -21,20 +21,12 @@ RUN apt-get update \
        apache2-utils
 
 WORKDIR /var/app/
-
 COPY . /var/app/
 
-# by enabling this, the special/experimental liboboe will be installed for benchmarking
-ARG SPECIAL_LIBOBOE
 ARG OBOE_ENV
 ARG BUNDLE_RUBYGEMS__PKG__GITHUB__COM
 
 RUN bundle install
-
-RUN gem list | grep solarwinds_apm | awk -F'[()]' '{print $2}' > /solarwinds_version.txt
-
-RUN version=$(cat /solarwinds_version.txt) && \
-    cp /var/app/otel_config.rb /usr/local/bundle/gems/solarwinds_apm-${version}/lib/solarwinds_apm/
 
 EXPOSE 8002
 
