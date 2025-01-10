@@ -79,8 +79,6 @@ services:
       AGENT_TYPE: apm-off
       SW_APM_ENABLED: false
       HOST_NAME: swo_ruby_apm_benchmark_off-2
-    volumes:
-      - ./java-collector/server-grpc.crt:/var/app/test-app/server-grpc.crt
     deploy:
       resources: *service-resource
 
