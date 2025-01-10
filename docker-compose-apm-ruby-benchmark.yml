@@ -31,7 +31,6 @@ services:
       AGENT_TYPE: apm-on
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
-      SW_APM_DEBUG_LEVEL: 3
       HOST_NAME: swo_ruby_apm_benchmark_on-1
     deploy:
       resources: *service-resource
@@ -59,7 +58,6 @@ services:
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
       OTEL_EXPORTER_OTLP_TRACES_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
       HOST_NAME: swo_ruby_apm_benchmark_otlp_on-1
-      # OTEL_LOG_LEVEL: 'debug'
     deploy:
       resources: *service-resource
 
