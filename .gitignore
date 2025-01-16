@@ -1,0 +1,5 @@
+.DS_Store
+.env
+*.log
+*.sqlite3
+*local_secret.txt
