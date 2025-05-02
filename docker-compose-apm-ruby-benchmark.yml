@@ -51,13 +51,10 @@ services:
     environment:
       AGENT_TYPE: apm-otlp-on
       OTLP_MODE_ON: true
-      SW_APM_REPORTER: file
       OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
-      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_STG}
-      OTEL_EXPORTER_OTLP_METRICS_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
-      OTEL_EXPORTER_OTLP_TRACES_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
       HOST_NAME: swo_ruby_apm_benchmark_otlp_on-1
+      SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG}
+      SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
     deploy:
       resources: *service-resource
 
@@ -89,7 +86,7 @@ services:
       context: ./locust-holder
       dockerfile: Dockerfile
     container_name: locust-app-holder
-    # command: locust --headless -u 1 --host http://0.0.0.0:8002
+    command: locust --headless -u 1 --host http://0.0.0.0:8002
     environment:
       API_TOKEN: ${API_TOKEN}
       SERVICE_NAME: apm-ruby-benchmark

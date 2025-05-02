@@ -62,4 +62,6 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   config.hosts << "#{ENV['HOST_NAME']}:8002"
+
+  config.logger = Logger.new(IO::NULL)
 end

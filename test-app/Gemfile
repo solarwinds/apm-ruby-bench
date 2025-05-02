@@ -15,7 +15,7 @@ gem 'opentelemetry-exporter-otlp-metrics'
 
 if ENV['AGENT_TYPE'] == 'apm-otlp-on'
   source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
-    gem 'solarwinds_apm', '6.1.1.otlp'
+    gem 'solarwinds_apm', '7.0.0'
   end
 else
   gem 'solarwinds_apm'
