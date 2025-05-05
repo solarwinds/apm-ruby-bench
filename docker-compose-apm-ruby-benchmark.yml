@@ -14,6 +14,12 @@ x-load-resource: &load-resource
     cpus: '2'
     memory: 2G
 
+x-logging: &x-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   swo_ruby_apm_on:
     image: swo_ruby_apm_benchmark:latest
@@ -34,6 +40,7 @@ services:
       HOST_NAME: swo_ruby_apm_benchmark_on-1
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   swo_ruby_apm_otlp_on:
     image: swo_ruby_apm_benchmark-otlp:latest
@@ -57,6 +64,7 @@ services:
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   swo_ruby_apm_off:
     image: swo_ruby_apm_benchmark:latest
@@ -76,6 +84,7 @@ services:
       HOST_NAME: swo_ruby_apm_benchmark_off-2
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   # python container that can run locust endless
   # this locust run will produce metrics: apm.ruby.benchmark.response.time
@@ -101,3 +110,4 @@ services:
       - swo_ruby_apm_off
     deploy:
       resources: *load-resource
+    logging: *x-logging
