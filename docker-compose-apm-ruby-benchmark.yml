@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       args:
         AGENT_TYPE: apm-on
-    container_name: swo_ruby_apm_benchmark_on-1
+    container_name: swo_ruby_6_1_2
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -37,7 +37,7 @@ services:
       AGENT_TYPE: apm-on
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
-      HOST_NAME: swo_ruby_apm_benchmark_on-1
+      HOST_NAME: swo_ruby_6_1_2
     deploy:
       resources: *service-resource
     logging: *x-logging
@@ -50,7 +50,7 @@ services:
       args:
         AGENT_TYPE: apm-otlp-on
         BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
-    container_name: swo_ruby_apm_benchmark_otlp_on-1
+    container_name: swo_ruby_7_0_0
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -59,7 +59,7 @@ services:
       AGENT_TYPE: apm-otlp-on
       OTLP_MODE_ON: true
       OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
-      HOST_NAME: swo_ruby_apm_benchmark_otlp_on-1
+      HOST_NAME: swo_ruby_7_0_0
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG}
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
     deploy:
@@ -73,7 +73,7 @@ services:
       dockerfile: Dockerfile
       args:
         AGENT_TYPE: apm-off
-    container_name: swo_ruby_apm_benchmark_off-2
+    container_name: uninstrumented
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -81,7 +81,7 @@ services:
     environment:
       AGENT_TYPE: apm-off
       SW_APM_ENABLED: false
-      HOST_NAME: swo_ruby_apm_benchmark_off-2
+      HOST_NAME: uninstrumented
     deploy:
       resources: *service-resource
     logging: *x-logging

@@ -65,9 +65,9 @@ class WebsiteOneUser(HttpUser):
     wait_time = between(locust_wait_time_l, locust_wait_time_h)
     @task
     def load_test_website_one(self):
-        self.client.get("http://swo_ruby_apm_benchmark_on-1:8002/", name="with_apm")
-        self.client.get("http://swo_ruby_apm_benchmark_otlp_on-1:8002/", name="with_otlp_apm")
-        self.client.get("http://swo_ruby_apm_benchmark_off-2:8002/", name="without_apm")
+        self.client.get("http://swo_ruby_6_1_2:8002/", name="6.1.2")
+        self.client.get("http://swo_ruby_7_0_0:8002/", name="7.0.0")
+        self.client.get("http://uninstrumented:8002/", name="without_apm")
 
 # this will be called three times if there are three get
 @events.request.add_listener

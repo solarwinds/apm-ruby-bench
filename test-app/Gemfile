@@ -18,7 +18,7 @@ if ENV['AGENT_TYPE'] == 'apm-otlp-on'
     gem 'solarwinds_apm', '7.0.0'
   end
 else
-  gem 'solarwinds_apm'
+  gem 'solarwinds_apm', '6.1.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
