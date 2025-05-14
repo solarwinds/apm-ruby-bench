@@ -67,7 +67,7 @@ class WebsiteOneUser(HttpUser):
     def load_test_website_one(self):
         self.client.get("http://swo_ruby_6_1_2:8002/", name="6.1.2")
         self.client.get("http://swo_ruby_7_0_0:8002/", name="7.0.0")
-        self.client.get("http://uninstrumented:8002/", name="uninstrumented")
+        self.client.get("http://swo_ruby_uninstrumented:8002/", name="uninstrumented")
 
 # this will be called three times if there are three get
 @events.request.add_listener
