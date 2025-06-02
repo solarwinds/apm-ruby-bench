@@ -14,6 +14,12 @@ x-load-resource: &load-resource
     cpus: '2'
     memory: 2G
 
+x-logging: &x-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   swo_ruby_apm_on:
     image: swo_ruby_apm_benchmark:latest
@@ -22,7 +28,7 @@ services:
       dockerfile: Dockerfile
       args:
         AGENT_TYPE: apm-on
-    container_name: swo_ruby_apm_benchmark_on-1
+    container_name: swo_ruby_6_1_2
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -31,9 +37,10 @@ services:
       AGENT_TYPE: apm-on
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
-      HOST_NAME: swo_ruby_apm_benchmark_on-1
+      HOST_NAME: swo_ruby_6_1_2
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   swo_ruby_apm_otlp_on:
     image: swo_ruby_apm_benchmark-otlp:latest
@@ -43,7 +50,7 @@ services:
       args:
         AGENT_TYPE: apm-otlp-on
         BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
-    container_name: swo_ruby_apm_benchmark_otlp_on-1
+    container_name: swo_ruby_7_0_0
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -51,15 +58,13 @@ services:
     environment:
       AGENT_TYPE: apm-otlp-on
       OTLP_MODE_ON: true
-      SW_APM_REPORTER: file
       OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
-      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT_STG}
-      OTEL_EXPORTER_OTLP_METRICS_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT_STG}
-      OTEL_EXPORTER_OTLP_TRACES_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS_STG}
-      HOST_NAME: swo_ruby_apm_benchmark_otlp_on-1
+      HOST_NAME: swo_ruby_7_0_0
+      SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG}
+      SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   swo_ruby_apm_off:
     image: swo_ruby_apm_benchmark:latest
@@ -68,7 +73,7 @@ services:
       dockerfile: Dockerfile
       args:
         AGENT_TYPE: apm-off
-    container_name: swo_ruby_apm_benchmark_off-2
+    container_name: swo_ruby_uninstrumented
     restart: "no"
     # command: tail -f /dev/null
     ports:
@@ -76,9 +81,10 @@ services:
     environment:
       AGENT_TYPE: apm-off
       SW_APM_ENABLED: false
-      HOST_NAME: swo_ruby_apm_benchmark_off-2
+      HOST_NAME: swo_ruby_uninstrumented
     deploy:
       resources: *service-resource
+    logging: *x-logging
 
   # python container that can run locust endless
   # this locust run will produce metrics: apm.ruby.benchmark.response.time
@@ -89,7 +95,7 @@ services:
       context: ./locust-holder
       dockerfile: Dockerfile
     container_name: locust-app-holder
-    # command: locust --headless -u 1 --host http://0.0.0.0:8002
+    command: locust --headless -u 1 --host http://0.0.0.0:8002
     environment:
       API_TOKEN: ${API_TOKEN}
       SERVICE_NAME: apm-ruby-benchmark
@@ -104,3 +110,4 @@ services:
       - swo_ruby_apm_off
     deploy:
       resources: *load-resource
+    logging: *x-logging
