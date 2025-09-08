@@ -21,7 +21,7 @@ elsif ENV['AGENT_TYPE'] == 'old-on'
   gem 'solarwinds_apm'
 elsif ENV['AGENT_TYPE'] == 'new-on'
   source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
-    gem 'solarwinds_apm', '7.0.1.prev1'
+    gem 'solarwinds_apm', '7.0.1.prev2'
   end
 else
   gem 'solarwinds_apm', '6.1.2'

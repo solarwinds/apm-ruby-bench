@@ -46,7 +46,7 @@ meter_provider = MeterProvider(
 metrics.set_meter_provider(meter_provider)
 otel_meter = meter_provider.get_meter("performance-benchmark-always-sample")
 
-metrics_name = environ.get("CUSTOM_METRICS_NAME", 'apm.ruby.benchmark.response.time')
+metrics_name = 'apm.ruby.performance.response.time'
 http_response_time = otel_meter.create_histogram(
     name=metrics_name,
     description="measures the duration of the inbound HTTP request",
@@ -54,19 +54,17 @@ http_response_time = otel_meter.create_histogram(
 
 locust_wait_time_l = int(environ.get("LOCUST_WAIT_TIME_LOW", "10"))
 locust_wait_time_h = int(environ.get("LOCUST_WAIT_TIME_HIGH", "20"))
-metrics_attribute_name = environ.get("METRICS_ATTRIBUTE_NAME", "apm-ruby-benchmark-attr")
+metrics_attribute_name = 'apm-ruby-performance-attr'
 
-request = {'6.1.2': {'request_count' : 0, 'request_time' : 0 },
-           '7.0.0': {'request_count' : 0, 'request_time' : 0 },
-           'uninstrumented': {'request_count' : 0, 'request_time' : 0 }
-          }
+request = {'apm-old': {'request_count' : 0, 'request_time' : 0 },
+           'apm-new': {'request_count' : 0, 'request_time' : 0 }}
 
 class WebsiteOneUser(HttpUser):
     wait_time = between(locust_wait_time_l, locust_wait_time_h)
     @task
     def load_test_website_one(self):
-        self.client.get("http://apm_ruby_old:8002/", name="apm-new")
-        self.client.get("http://apm_ruby_new:8002/", name="apm-old")
+        self.client.get("http://apm_ruby_old:8002/", name="apm-old")
+        self.client.get("http://apm_ruby_new:8002/", name="apm-new")
 
 # this will be called three times if there are three get
 @events.request.add_listener

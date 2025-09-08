@@ -27,17 +27,20 @@ services:
       context: ./test-app
       dockerfile: Dockerfile
       args:
-        AGENT_TYPE: apm-on
+        AGENT_TYPE: new-on
+        BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
     container_name: apm_ruby_new
     restart: "no"
-    # command: tail -f /dev/null
+    command: tail -f /dev/null
     ports:
       - 8002:8002
     environment:
-      AGENT_TYPE: old-on
+      AGENT_TYPE: new-on
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
       HOST_NAME: apm_ruby_new
+      OTEL_MODE_ON: true
+      OTEL_SERVICE_NAME: apm-ruby-performance-7-0-1
     deploy:
       resources: *service-resource
     logging: *x-logging
@@ -48,17 +51,17 @@ services:
       context: ./test-app
       dockerfile: Dockerfile
       args:
-        AGENT_TYPE: new-on
+        AGENT_TYPE: old-on
         BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
     container_name: apm_ruby_old
     restart: "no"
-    # command: tail -f /dev/null
+    command: tail -f /dev/null
     ports:
       - 8004:8002
     environment:
-      AGENT_TYPE: new-on
+      AGENT_TYPE: old-on
       OTLP_MODE_ON: true
-      OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
+      OTEL_SERVICE_NAME: apm-ruby-performance-7-0-0
       HOST_NAME: apm_ruby_old
       SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG}
       SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
@@ -75,7 +78,7 @@ services:
       context: ./locust-holder
       dockerfile: Dockerfile
     container_name: locust-app-holder
-    command: locust --headless -u 1 --host http://0.0.0.0:8002
+    # command: locust --headless -u 1 --host http://0.0.0.0:8002
     environment:
       API_TOKEN: ${API_TOKEN}
       SERVICE_NAME: apm-ruby-performance-check
