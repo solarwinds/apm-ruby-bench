@@ -1,0 +1,92 @@
+x-service-resource: &service-resource
+  limits:
+    cpus: '1'
+    memory: 512M
+  reservations:
+    cpus: '1'
+    memory: 512M
+
+x-load-resource: &load-resource
+  limits:
+    cpus: '2'
+    memory: 2G
+  reservations:
+    cpus: '2'
+    memory: 2G
+
+x-logging: &x-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  apm_ruby_new:
+    image: apm_ruby_new:latest
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+      args:
+        AGENT_TYPE: apm-on
+    container_name: apm_ruby_new
+    restart: "no"
+    # command: tail -f /dev/null
+    ports:
+      - 8002:8002
+    environment:
+      AGENT_TYPE: old-on
+      SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
+      SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG} # with service name: swo-benchmark-test
+      HOST_NAME: apm_ruby_new
+    deploy:
+      resources: *service-resource
+    logging: *x-logging
+
+  apm_ruby_old:
+    image: apm_ruby_old:latest
+    build:
+      context: ./test-app
+      dockerfile: Dockerfile
+      args:
+        AGENT_TYPE: new-on
+        BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${GITHUB_TOKEN}
+    container_name: apm_ruby_old
+    restart: "no"
+    # command: tail -f /dev/null
+    ports:
+      - 8004:8002
+    environment:
+      AGENT_TYPE: new-on
+      OTLP_MODE_ON: true
+      OTEL_SERVICE_NAME: apm-ruby-benchmark-otlp
+      HOST_NAME: apm_ruby_old
+      SW_APM_SERVICE_KEY: ${AGENT_TOKEN_STG}
+      SW_APM_COLLECTOR: ${SW_APM_COLLECTOR_STG}
+    deploy:
+      resources: *service-resource
+    logging: *x-logging
+
+  # python container that can run locust endless
+  # this locust run will produce metrics: apm.ruby.benchmark.response.time
+  # on swo backend, you will expect to see the Service with name apm-ruby-benchmark without any trace (metrics only)
+  locust_app_holder:
+    image: locust_app_holder:latest
+    build:
+      context: ./locust-holder
+      dockerfile: Dockerfile
+    container_name: locust-app-holder
+    command: locust --headless -u 1 --host http://0.0.0.0:8002
+    environment:
+      API_TOKEN: ${API_TOKEN}
+      SERVICE_NAME: apm-ruby-performance-check
+      CUSTOM_METRICS_NAME: performance.apm.ruby.benchmark.response.time
+      BENCHMARK_ENDPOINT:  otel.collector.na-01.st-ssp.solarwinds.com:443
+      LOCUST_WAIT_TIME_LOW: 30
+      LOCUST_WAIT_TIME_HIGH: 60
+      METRICS_ATTRIBUTE_NAME: performance-apm-ruby-benchmark-attr
+    depends_on:
+      - apm_ruby_new
+      - apm_ruby_old
+    deploy:
+      resources: *load-resource
+    logging: *x-logging

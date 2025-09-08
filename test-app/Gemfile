@@ -17,6 +17,12 @@ if ENV['AGENT_TYPE'] == 'apm-otlp-on'
   source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
     gem 'solarwinds_apm', '7.0.0'
   end
+elsif ENV['AGENT_TYPE'] == 'old-on'
+  gem 'solarwinds_apm'
+elsif ENV['AGENT_TYPE'] == 'new-on'
+  source 'https://rubygems.pkg.github.com/xuan-cao-swi' do
+    gem 'solarwinds_apm', '7.0.1.prev1'
+  end
 else
   gem 'solarwinds_apm', '6.1.2'
 end
