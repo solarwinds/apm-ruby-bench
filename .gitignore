@@ -4,3 +4,6 @@
 *.sqlite3
 *local_secret.txt
 test-app/Gemfile.lock
+test-app/.ruby-version
+tmp/
+dependabot
