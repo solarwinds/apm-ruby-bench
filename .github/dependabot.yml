@@ -1,9 +1,17 @@
 version: 2
+registries:
+  github-packages-xuan-cao-swi:
+    type: rubygems-server
+    url: https://rubygems.pkg.github.com/xuan-cao-swi
+    token: ${{secrets.GITHUB_TOKEN}}
+
 updates:
   - package-ecosystem: "bundler"
     directory: "/test-app"
     schedule:
       interval: "weekly"
+    registries:
+      - github-packages-xuan-cao-swi
 
   - package-ecosystem: "pip"
     directory: "/locust-holder"
