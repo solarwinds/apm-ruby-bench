@@ -2,8 +2,18 @@
 
 ## Running the docker compose
 
-```
+```bash
 docker compose -f docker-compose-apm-ruby-benchmark.yml up
+```
+
+### Deploy
+
+```bash
+sudo docker container ps
+sudo docker compose -f docker-compose-apm-ruby-benchmark.yml down
+sudo docker compose -f docker-compose-apm-ruby-benchmark.yml build --no-cache
+sudo docker compose -f docker-compose-apm-ruby-benchmark.yml up -d
+sudo docker logs -f locust-app-holder 
 ```
 
 Additional configuration for service `locust_app_holder` can check `locust-holder/README.md`
