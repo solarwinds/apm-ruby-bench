@@ -8,5 +8,5 @@ gem "puma", "~> 8.0.2"
 if ENV['AGENT_TYPE'] == 'apm-otlp-on'
   gem 'solarwinds_apm', '7.1.1'
 else
-  gem 'solarwinds_apm', '6.1.2'
+  gem 'solarwinds_apm', '7.1.1'
 end
